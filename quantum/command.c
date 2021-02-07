@@ -576,25 +576,6 @@ static bool command_console(uint8_t code) {
 #    if !defined(NO_PRINT) && !defined(USER_PRINT)
 static void mousekey_param_print(void) {
     xprintf(/* clang-format off */
-        "\n\t- Values -\n"
-
-        "1: delay(*10ms): %u\n"
-        "2: interval(ms): %u\n"
-        "3: max_speed: %u\n"
-        "4: time_to_max: %u\n"
-        "5: wheel_max_speed: %u\n"
-        "6: wheel_time_to_max: %u\n"
-
-        , mk_delay
-        , mk_interval
-        , mk_max_speed
-        , mk_time_to_max
-        , mk_wheel_max_speed
-        , mk_wheel_time_to_max
-
-    ); /* clang-format on */
-}
-#    endif /* !NO_PRINT && !USER_PRINT */
 
 #ifndef MK_3_SPEED
         "1:	delay(*10ms): %u\n"
@@ -676,6 +657,7 @@ bool mousekey_console(uint8_t code) {
 
         case KC_P:
 #    if !defined(NO_PRINT) && !defined(USER_PRINT)
+            print("\n\t- Values -\n");
             mousekey_param_print();
 #    endif
             break;
