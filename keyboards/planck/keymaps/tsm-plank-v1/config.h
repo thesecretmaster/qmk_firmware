@@ -1,13 +1,14 @@
 #pragma once
 
 #ifdef AUDIO_ENABLE
-    #define STARTUP_SONG SONG(PLANCK_SOUND)
     // #define STARTUP_SONG SONG(NO_SOUND)
+    #define STARTUP_SONG SONG(PLANCK_SOUND)
 
-    #define DEFAULT_LAYER_SONGS { SONG(QWERTY_SOUND), \
-                                  SONG(COLEMAK_SOUND), \
-                                  SONG(DVORAK_SOUND) \
-                                }
+    /* #define DEFAULT_LAYER_SONGS { SONG(QWERTY_SOUND), \
+                                     SONG(COLEMAK_SOUND), \
+                                     SONG(DVORAK_SOUND) \
+                                   }
+    */
 #endif
 
 /*
@@ -39,11 +40,3 @@
 #define USB_POLLING_INTERVAL_MS 2
 #define QMK_KEYS_PER_SCAN 4
 #define TAPPING_TOGGLE 2
-// #define NO_PRINT
-// #define NO_DEBUG
-#ifndef NO_DEBUG
-#define NO_DEBUG
-#endif // !NO_DEBUG
-#if !defined(NO_PRINT) && !defined(CONSOLE_ENABLE)
-#define NO_PRINT
-#endif // !NO_PRINT
