@@ -179,9 +179,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   float plover_gb_song[][2]  = SONG(PLOVER_GOODBYE_SOUND);
 #endif
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-  return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
-}
+// layer_state_t layer_state_set_user(layer_state_t state) {
+//   return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+// }
 
 static float arrows_ctrl_song_up[][2] = SONG(E__NOTE(_E6), E__NOTE(_A6), ED_NOTE(_E7),);
 static float arrows_ctrl_song_down[][2] = SONG(E__NOTE(_E7), E__NOTE(_A6), ED_NOTE(_E6),);
@@ -208,7 +208,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed) {
         #ifdef AUDIO_ENABLE
           stop_all_notes();
-          PLAY_SONG(plover_song);
+          PLAY_SONG(shift_caps_song_up);
         #endif
         layer_clear();
         layer_on(_QWERTY);
@@ -291,6 +291,40 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
   }
   return true;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+  rgblight_config_t rgblight_config;
+  switch(get_highest_layer(state)) {
+     // case _CAPSLOCK:
+     //   rgblight_enable_noeeprom();
+     //   rgblight_sethsv_noeeprom(HSV_BLUE);
+     //   break;
+     case _GAMER_ARROWS:
+       rgblight_enable_noeeprom();
+       rgblight_sethsv_noeeprom(HSV_PURPLE);
+       break;
+     case _PLOVER:
+       rgblight_enable_noeeprom();
+       rgblight_sethsv_noeeprom(HSV_GREEN);
+       break;
+     case _MC_OVERRIDES:
+       rgblight_enable_noeeprom();
+       rgblight_sethsv_noeeprom(HSV_RED);
+       break;
+     default:
+       //Read RGB Light State
+       rgblight_config.raw = eeconfig_read_rgblight();
+       //If enabled, set white
+       if (rgblight_config.enable) {
+         rgblight_sethsv_noeeprom(HSV_WHITE);
+       } else { //Otherwise go back to disabled
+         rgblight_disable_noeeprom();
+       }
+       break;
+  }
+  return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+  // return state;
 }
 
 bool muse_mode = false;
