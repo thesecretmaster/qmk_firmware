@@ -36,10 +36,10 @@ enum planck_keycodes {
   PLOVER,
   LAYER_RESET,
   MC_LAYOUT,
-  // ARROWS_CTRL,
   SHIFT_CAPS,
   GAMER_ARROW_ON,
-  GAMER_ARROW_OFF
+  GAMER_ARROW_OFF,
+  HOLD
 };
 
 // IDEAS:
@@ -56,18 +56,13 @@ combo_t key_combos[COMBO_COUNT] = {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-// [_QWERTY] = LAYOUT_planck_grid(
-//     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-//     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-//     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-//     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-// )
 [_MC_OVERRIDES] = LAYOUT_planck_grid(
     _______,  _______, _______,      _______, _______, _______, _______, _______, _______,     _______, _______, _______,
     _______,  _______, _______,      _______, _______, _______, _______, _______, _______,     _______, _______, _______,
     KC_LSFT,  _______, _______,      _______, _______, _______, _______, _______, _______,     _______, _______, _______,
     _______,  _______, OSL(_NUMBAR), _______, _______, KC_SPC,  _______, _______, LAYER_RESET, _______, _______, _______
 ),
+
 [_PLOVER] = LAYOUT_planck_grid(
   STN_N1,      STN_N2,  STN_N3,  STN_N4,  STN_N5,  STN_N6,  STN_N7,  STN_N8,  STN_N9,  STN_NA,  STN_NB,  STN_NC ,
   STN_FN,      STN_S1,  STN_TL,  STN_PL,  STN_HL,  STN_ST1, STN_ST3, STN_FR,  STN_PR,  STN_LR,  STN_TR,  STN_DR ,
@@ -119,23 +114,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = LAYOUT_planck_grid(
-    KC_TAB,                KC_Q,    KC_W,    KC_E,       KC_R,         KC_T,           KC_Y,    KC_U,        KC_I,    KC_O,    KC_P,    KC_BSPC,
-    KC_ESC,                KC_A,    KC_S,    KC_D,       KC_F,         KC_G,           KC_H,    KC_J,        KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-    /* MT(MOD_LSFT, KC_CAPS) */ SHIFT_CAPS, KC_Z,    KC_X,    KC_C,       KC_V,         KC_B,           KC_N,    KC_M,        KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    /* ARROWS_CTRL */ KC_LCTRL,           KC_LGUI, KC_LALT, MO(_LOWER), MO(_RAISE),   MO(_VIM_BINDS), KC_SPC,  TT(_NUMPAD), XXXXXXX, KC_MUTE, KC_VOLD, KC_VOLU
+    KC_TAB,     KC_Q,    KC_W,    KC_E,       KC_R,         KC_T,           KC_Y,    KC_U,        KC_I,    KC_O,    KC_P,    KC_BSPC,
+    KC_ESC,     KC_A,    KC_S,    KC_D,       KC_F,         KC_G,           KC_H,    KC_J,        KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+    SHIFT_CAPS, KC_Z,    KC_X,    KC_C,       KC_V,         KC_B,           KC_N,    KC_M,        KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
+    KC_LCTRL,   KC_LGUI, KC_LALT, MO(_LOWER), MO(_RAISE),   MO(_VIM_BINDS), KC_SPC,  TT(_NUMPAD), HOLD,    KC_MUTE, KC_VOLD, KC_VOLU
 ),
 
-/* Lower
- * ,-----------------------------------------------------------------------------------.
- * |   ~  |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   (  |   )  | Bksp |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Del  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |   _  |   +  |   {  |   }  |  |   |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |ISO ~ |ISO | | Home | End  |      |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |             |      | Next | Vol- | Vol+ | Play |
- * `-----------------------------------------------------------------------------------'
- */
 [_LOWER] = LAYOUT_planck_grid(
     _______, _______, _______, _______, _______, _______, _______, _______, KC_LBRC, KC_RBRC, _______, _______,
     _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   _______, KC_LPRN, KC_RPRN, _______, _______,
@@ -143,17 +127,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
-/* Raise
- * ,-----------------------------------------------------------------------------------.
- * |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | Bksp |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Del  |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |   -  |   =  |   [  |   ]  |  \   |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |ISO # |ISO / |Pg Up |Pg Dn |      |
- * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |             |      | Next | Vol- | Vol+ | Play |
- * `-----------------------------------------------------------------------------------'
- */
 [_RAISE] = LAYOUT_planck_grid(
     _______, _______, KC_AT,   KC_EXLM, KC_GRV,  _______, _______, KC_ASTR, KC_CIRC, KC_PERC, _______, _______,
     _______, _______, KC_AMPR, KC_PIPE, KC_UNDS, _______, _______, KC_EQL,  KC_MINS, KC_PLUS, _______, _______,
@@ -196,8 +169,6 @@ static float arrows_ctrl_song_down[][2] = SONG(E__NOTE(_E7), E__NOTE(_A6), ED_NO
 
 static float shift_caps_song_up[][2] = SONG(E__NOTE(_E6), E__NOTE(_A6), ED_NOTE(_E7),);
 static float shift_caps_song_down[][2] = SONG(E__NOTE(_E7), E__NOTE(_A6), ED_NOTE(_E6),);
-
-// static uint16_t arrows_ctrl_timer;
 
 void set_capslock_state(bool newstate) {
    if (host_keyboard_led_state().caps_lock != newstate) {
@@ -247,8 +218,34 @@ void double_tap_check(bool is_pressed, struct double_tap_manager *manager, uint1
          }
       }
 }
+#define HELD_MAX 10
+static bool held = false;
+static int held_count = 0;
+struct held_key {
+   keyrecord_t record;
+   uint16_t keycode;
+};
+static struct held_key held_buffer[HELD_MAX];
+void release_held_keys(void) {
+  for (int i = 0; i < held_count; i++) {
+     unregister_code(held_buffer[i].keycode);
+  }
+  held_count = 0;
+  held = false;
+}
+void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (held && keycode < KC_0 && keycode > KC_A) {
+     release_held_keys();
+  }
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (held && !record->event.pressed && keycode < QK_FUNCTION_MAX) {
+     // memcpy(&held_buffer[held_count].record, record, sizeof(keyrecord_t));
+     held_buffer[held_count].keycode = keycode;
+     held_count++;
+     return false;
+  }
   switch (keycode) {
     case QWERTY:
       if (record->event.pressed) {
@@ -256,6 +253,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
+    case HOLD:
+      if (record->event.pressed) {
+        if (held) {
+           release_held_keys();
+        } else {
+           held = true;
+        }
+      }
+      return false;
     case MC_LAYOUT:
       if (record->event.pressed) {
         #ifdef AUDIO_ENABLE
@@ -299,57 +305,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          PLAY_SONG(arrows_ctrl_song_down);
       }
       return false;
-    // case ARROWS_CTRL:
-    //   if (record->event.pressed) {
-    //      arrows_ctrl_timer = timer_read();
-    //      register_code(KC_LCTRL);
-    //   } else {
-    //      unregister_code(KC_LCTRL);
-    //      if (timer_elapsed(arrows_ctrl_timer) < TAPPING_TERM) {
-    //         layer_invert(_GAMER_ARROWS);
-    //         if (layer_state_is(_GAMER_ARROWS)) {
-    //            PLAY_SONG(arrows_ctrl_song_up);
-    //         } else {
-    //            PLAY_SONG(arrows_ctrl_song_down);
-    //         }
-    //      }
-    //   }
-    //   return false;
     case SHIFT_CAPS:
       double_tap_check(record->event.pressed, &shift_caps_tracker, KC_LSFT);
-//       if (record->event.pressed) {
-//          register_code(KC_LSFT);
-//       } else {
-//          unregister_code(KC_LSFT);
-//       }
-//       if (host_keyboard_led_state().caps_lock) {
-//          if (record->event.pressed) {
-//             shift_caps_tracker.exit_timer = timer_read();
-//          } else if (timer_elapsed(shift_caps_tracker.exit_timer) < TAPPING_TERM) {
-//             set_capslock_state(false);
-//             PLAY_SONG(shift_caps_song_down);
-//          }
-//       } else {
-//          if (timer_elapsed(shift_caps_tracker.timestamps[0]) > TAPPING_TERM * shift_caps_tracker.idx) {
-//            shift_caps_tracker.idx = 0;
-//          } 
-//          if (shift_caps_tracker.idx == 0 && record->event.pressed) {
-//             shift_caps_tracker.timestamps[0] = timer_read();
-//             shift_caps_tracker.idx = 1;
-//          } else if ((record->event.pressed ? 0 : 1) == (shift_caps_tracker.idx % 2)) {
-//            if (timer_elapsed(shift_caps_tracker.timestamps[shift_caps_tracker.idx - 1]) > TAPPING_TERM) {
-//                shift_caps_tracker.idx = 0;
-//             } else {
-//                shift_caps_tracker.timestamps[shift_caps_tracker.idx] = timer_read();
-//                shift_caps_tracker.idx += 1;
-//             }
-//             if (shift_caps_tracker.idx == 4) {
-//                shift_caps_tracker.idx = 0;
-//                set_capslock_state(true);
-//                PLAY_SONG(shift_caps_song_up);
-//             }
-//          }
-//       }
       return false;
   }
   return true;
@@ -362,6 +319,10 @@ layer_state_t layer_state_set_user(layer_state_t state) {
      //   rgblight_enable_noeeprom();
      //   rgblight_sethsv_noeeprom(HSV_BLUE);
      //   break;
+     case _NUMPAD:
+       rgblight_enable_noeeprom();
+       rgblight_sethsv_noeeprom(HSV_RED);
+       break;
      case _GAMER_ARROWS:
        rgblight_enable_noeeprom();
        rgblight_sethsv_noeeprom(HSV_PURPLE);
