@@ -44,27 +44,23 @@ enum planck_keycodes {
   MO_RAISE
 };
 
-// IDEAS:
-// DONE - Have a modifier layer that moves the vim arrows to the vim place
-// - Real numpad
-// - Bind ctrl to held esc
-// - layer that activates on t key and deactivates on enter for talking
-
 const uint16_t PROGMEM gamer_arrow_combo[] = {KC_MUTE, KC_VOLD, KC_VOLU, COMBO_END};
-const uint16_t PROGMEM lgui_combo[] = {MO(_VIM_BINDS), MO(_RAISE), COMBO_END};
+const uint16_t PROGMEM lgui_combo[] = {KC_LALT, MO(_RAISE), COMBO_END};
+const uint16_t PROGMEM lgui_space_combo[] = {MO(_RAISE), KC_SPC, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
    COMBO(gamer_arrow_combo, GAMER_ARROW_ON),
-   COMBO(lgui_combo, KC_LGUI)
+   COMBO(lgui_combo, KC_LGUI),
+   COMBO(lgui_space_combo, LGUI(KC_SPC))
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_MC_OVERRIDES] = LAYOUT_planck_grid(
-    _______,  _______, _______,      _______, _______, _______, _______, _______, _______,     _______, _______, _______,
-    _______,  _______, _______,      _______, _______, _______, _______, _______, _______,     _______, _______, _______,
-    KC_LSFT,  _______, _______,      _______, _______, _______, _______, _______, _______,     _______, _______, _______,
-    _______,  _______, OSL(_NUMBAR), _______, _______, KC_SPC,  _______, _______, LAYER_RESET, _______, _______, _______
+    _______,     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    _______,     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    KC_LSFT,     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+    LAYER_RESET, _______, _______, _______, KC_SPC,  _______, KC_LALT, _______, _______, _______, _______, _______
 ),
 
 [_PLOVER] = LAYOUT_planck_grid(
@@ -103,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_NUMPAD] = LAYOUT_planck_grid(
     _______, _______, _______, _______, _______, _______, _______, KC_7,    KC_8, KC_9,    _______, _______,
     _______, _______, _______, _______, _______, _______, _______, KC_4,    KC_5, KC_6,    KC_PMNS, _______,
-    _______, _______, _______, _______, _______, _______, _______, KC_1,    KC_2, KC_3,    KC_PPLS,  _______,
+    _______, _______, _______, _______, _______, _______, _______, KC_1,    KC_2, KC_3,    KC_PPLS, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, KC_0, _______, _______, _______
 ),
 /* Qwerty
@@ -118,10 +114,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_QWERTY] = LAYOUT_planck_grid(
-    KC_TAB,     KC_Q,    KC_W,    KC_E,       KC_R,         KC_T,           KC_Y,    KC_U,        KC_I,    KC_O,    KC_P,    KC_BSPC,
-    KC_ESC,     KC_A,    KC_S,    KC_D,       KC_F,         KC_G,           KC_H,    KC_J,        KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-    SHIFT_CAPS, KC_Z,    KC_X,    KC_C,       KC_V,         KC_B,           KC_N,    KC_M,        KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    MO(_LOWER), KC_LALT, KC_LGUI, KC_LCTRL,   MO(_RAISE),   MO(_VIM_BINDS), KC_SPC,  TT(_NUMPAD), HOLD,    KC_MUTE, KC_VOLD, KC_VOLU
+    KC_TAB,     KC_Q, KC_W,       KC_E,     KC_R,    KC_T,       KC_Y,   KC_U,        KC_I,           KC_O,    KC_P,    KC_BSPC,
+    KC_ESC,     KC_A, KC_S,       KC_D,     KC_F,    KC_G,       KC_H,   KC_J,        KC_K,           KC_L,    KC_SCLN, KC_QUOT,
+    SHIFT_CAPS, KC_Z, KC_X,       KC_C,     KC_V,    KC_B,       KC_N,   KC_M,        KC_COMM,        KC_DOT,  KC_SLSH, KC_ENT ,
+    KC_LGUI,    HOLD, MO(_LOWER), KC_LCTRL, KC_LALT, MO(_RAISE), KC_SPC, TT(_NUMPAD), MO(_VIM_BINDS), KC_MUTE, KC_VOLD, KC_VOLU
 ),
 
 [_LOWER] = LAYOUT_planck_grid(
