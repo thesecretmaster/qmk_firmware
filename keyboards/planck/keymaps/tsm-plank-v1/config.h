@@ -42,13 +42,15 @@
 #define USB_POLLING_INTERVAL_MS 1
 #define QMK_KEYS_PER_SCAN 4
 #define TAPPING_TOGGLE 2
-#define COMBO_COUNT 2
+#define COMBO_COUNT 3
 
 // Extend the length of the RAISE + VIM BIND -> LGUI combo. Not _needed_ but nice QOL. Extends it to TAPPING_TERM.
-// #define COMBO_MUST_HOLD_MODS
+#define COMBO_MUST_HOLD_MODS
 // Actually, make all the combos infinitely long. Could be dangerous, but with just the GAMER_ARROWS and LGUI combos, shouldn't be an issue.
 // Again, only a QOL improvement so you can remove this.
-#define COMBO_NO_TIMER
+//#define COMBO_NO_TIMER
+// Ok, I think this is the actual final iteration. We can't do no-timer because of the overlapping RAISE+SPC and LALT+RAISE combos.
+//#define COMBO_TERM 300
 
 // STOLEN FROM PPY
 //#define MK_VARIANT MK_TYPE_KINETIC
