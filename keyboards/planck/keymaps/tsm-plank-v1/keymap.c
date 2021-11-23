@@ -51,9 +51,11 @@ enum planck_keycodes {
 // - layer that activates on t key and deactivates on enter for talking
 
 const uint16_t PROGMEM gamer_arrow_combo[] = {KC_MUTE, KC_VOLD, KC_VOLU, COMBO_END};
+const uint16_t PROGMEM lgui_combo[] = {MO(_VIM_BINDS), MO(_RAISE), COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-   COMBO(gamer_arrow_combo, GAMER_ARROW_ON)
+   COMBO(gamer_arrow_combo, GAMER_ARROW_ON),
+   COMBO(lgui_combo, KC_LGUI)
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -119,7 +121,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,     KC_Q,    KC_W,    KC_E,       KC_R,         KC_T,           KC_Y,    KC_U,        KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_ESC,     KC_A,    KC_S,    KC_D,       KC_F,         KC_G,           KC_H,    KC_J,        KC_K,    KC_L,    KC_SCLN, KC_QUOT,
     SHIFT_CAPS, KC_Z,    KC_X,    KC_C,       KC_V,         KC_B,           KC_N,    KC_M,        KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    MO(_LOWER), KC_LALT, KC_LGUI, KC_LCTRL,   MO_RAISE,     MO_VIM_BINDS,   KC_SPC,  TT(_NUMPAD), HOLD,    KC_MUTE, KC_VOLD, KC_VOLU
+    MO(_LOWER), KC_LALT, KC_LGUI, KC_LCTRL,   MO(_RAISE),   MO(_VIM_BINDS), KC_SPC,  TT(_NUMPAD), HOLD,    KC_MUTE, KC_VOLD, KC_VOLU
 ),
 
 [_LOWER] = LAYOUT_planck_grid(
@@ -236,13 +238,10 @@ void release_held_keys(void) {
   held = false;
 }
 void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
-  if (held && keycode < KC_0 && keycode > KC_A) {
+  if (held && keycode <= KC_0 && keycode >= KC_A) {
      release_held_keys();
   }
 }
-
-static bool is_vim_binds_on = false;
-static bool is_raise_on = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (held && !record->event.pressed && keycode < QK_FUNCTION_MAX) {
@@ -313,44 +312,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case SHIFT_CAPS:
       double_tap_check(record->event.pressed, &shift_caps_tracker, KC_LSFT);
       return false;
-    case MO_VIM_BINDS:
-      if (record->event.pressed) {
-        is_vim_binds_on = true;
-        if (layer_state_is(_RAISE)) {
-          layer_off(_RAISE);
-          register_code(KC_LGUI);
-        } else {
-          layer_on(_VIM_BINDS);
-        }
-      } else {
-        is_vim_binds_on = false;
-        layer_off(_VIM_BINDS);
-        if (is_raise_on) {
-          unregister_code(KC_LGUI);
-          layer_on(_RAISE);
-        }
-      }
-      return false;
-    case MO_RAISE:
-      if (record->event.pressed) {
-        is_raise_on = true;
-        if (layer_state_is(_VIM_BINDS)) {
-          layer_off(_VIM_BINDS);
-          register_code(KC_LGUI);
-        } else {
-          layer_on(_RAISE);
-        }
-      } else {
-        is_raise_on = false;
-        layer_off(_RAISE);
-        if (is_vim_binds_on) {
-          unregister_code(KC_LGUI);
-          layer_on(_VIM_BINDS);
-        }
-      }
-      return false;
-
-
   }
   return true;
 }

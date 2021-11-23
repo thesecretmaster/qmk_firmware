@@ -1,4 +1,5 @@
 #pragma once
+#define STARTUP_SONG SONG(PLANCK_SOUND)
 
 #ifdef AUDIO_ENABLE
     // #define STARTUP_SONG SONG(NO_SOUND)
@@ -35,12 +36,19 @@
 // Most tactile encoders have detents every 4 stages
 #define ENCODER_RESOLUTION 4
 
+#define AUDIO_INIT_DELAY
 // https://kevl.in/2021/02/1000hz-qmk-polling/
 // https://beta.docs.qmk.fm/developing-qmk/qmk-reference/config_options
-#define USB_POLLING_INTERVAL_MS 2
+#define USB_POLLING_INTERVAL_MS 1
 #define QMK_KEYS_PER_SCAN 4
 #define TAPPING_TOGGLE 2
-#define COMBO_COUNT 1
+#define COMBO_COUNT 2
+
+// Extend the length of the RAISE + VIM BIND -> LGUI combo. Not _needed_ but nice QOL. Extends it to TAPPING_TERM.
+// #define COMBO_MUST_HOLD_MODS
+// Actually, make all the combos infinitely long. Could be dangerous, but with just the GAMER_ARROWS and LGUI combos, shouldn't be an issue.
+// Again, only a QOL improvement so you can remove this.
+#define COMBO_NO_TIMER
 
 // STOLEN FROM PPY
 //#define MK_VARIANT MK_TYPE_KINETIC
