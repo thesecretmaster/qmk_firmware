@@ -21,13 +21,13 @@
 enum planck_layers {
   _QWERTY,
   _PLOVER,
+  _LOWER,
+  _RAISE,
   _VIM_BINDS,
   _NUMPAD,
   _GAMER_ARROWS,
   _MC_OVERRIDES,
   _NUMBAR,
-  _LOWER,
-  _RAISE,
   _ADJUST
 };
 
@@ -39,7 +39,9 @@ enum planck_keycodes {
   SHIFT_CAPS,
   GAMER_ARROW_ON,
   GAMER_ARROW_OFF,
-  HOLD
+  HOLD,
+  MO_VIM_BINDS,
+  MO_RAISE
 };
 
 // IDEAS:
@@ -77,10 +79,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // ),
 
 [_VIM_BINDS] = LAYOUT_planck_grid(
-    _______, _______, _______, _______, _______, _______, _______, KC_PGDN, KC_PGUP, _______, _______, _______,
-    _______, _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-    _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+    _______, _______, KC_MS_BTN2, KC_MS_U, KC_MS_BTN1, _______, _______, KC_PGDN, KC_PGUP, _______, _______, _______,
+    _______, _______, KC_MS_L,    KC_MS_D, KC_MS_R,    _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,
+    _______, _______, _______,    _______, _______,    _______, KC_HOME, KC_END,  _______, _______, _______, _______,
+    _______, _______, _______,    _______, _______,    _______, _______, _______, _______, _______, _______, _______
 ),
 [_NUMBAR] = LAYOUT_planck_grid(
     _______, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    _______, _______,
@@ -98,8 +100,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_NUMPAD] = LAYOUT_planck_grid(
     _______, _______, _______, _______, _______, _______, _______, KC_7,    KC_8, KC_9,    _______, _______,
-    _______, _______, _______, _______, _______, _______, _______, KC_4,    KC_5, KC_6,    KC_MINS, _______,
-    _______, _______, _______, _______, _______, _______, _______, KC_1,    KC_2, KC_3,    KC_DOT,  _______,
+    _______, _______, _______, _______, _______, _______, _______, KC_4,    KC_5, KC_6,    KC_PMNS, _______,
+    _______, _______, _______, _______, _______, _______, _______, KC_1,    KC_2, KC_3,    KC_PPLS,  _______,
     _______, _______, _______, _______, _______, _______, _______, _______, KC_0, _______, _______, _______
 ),
 /* Qwerty
@@ -117,7 +119,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,     KC_Q,    KC_W,    KC_E,       KC_R,         KC_T,           KC_Y,    KC_U,        KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_ESC,     KC_A,    KC_S,    KC_D,       KC_F,         KC_G,           KC_H,    KC_J,        KC_K,    KC_L,    KC_SCLN, KC_QUOT,
     SHIFT_CAPS, KC_Z,    KC_X,    KC_C,       KC_V,         KC_B,           KC_N,    KC_M,        KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    KC_LCTRL,   KC_LGUI, KC_LALT, MO(_LOWER), MO(_RAISE),   MO(_VIM_BINDS), KC_SPC,  TT(_NUMPAD), HOLD,    KC_MUTE, KC_VOLD, KC_VOLU
+    MO(_LOWER), KC_LALT, KC_LGUI, KC_LCTRL,   MO_RAISE,     MO_VIM_BINDS,   KC_SPC,  TT(_NUMPAD), HOLD,    KC_MUTE, KC_VOLD, KC_VOLU
 ),
 
 [_LOWER] = LAYOUT_planck_grid(
@@ -129,8 +131,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_RAISE] = LAYOUT_planck_grid(
     _______, _______, KC_AT,   KC_EXLM, KC_GRV,  _______, _______, KC_ASTR, KC_CIRC, KC_PERC, _______, _______,
-    _______, _______, KC_AMPR, KC_PIPE, KC_UNDS, _______, _______, KC_EQL,  KC_MINS, KC_PLUS, _______, _______,
-    _______, _______, _______, _______, KC_TILD, _______, _______, KC_HASH, KC_AT,   KC_DLR,  KC_BSLS, _______,
+    _______, KC_LCBR, KC_LPRN, KC_RPRN, KC_UNDS, KC_PIPE, _______, KC_EQL,  KC_MINS, KC_PLUS, _______, _______,
+    _______, KC_RCBR, KC_LBRC, KC_RBRC, KC_TILD, KC_AMPR, _______, KC_HASH, KC_AT,   KC_DLR,  KC_BSLS, _______,
     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 ),
 
@@ -199,7 +201,7 @@ void double_tap_check(bool is_pressed, struct double_tap_manager *manager, uint1
       } else {
          if (timer_elapsed(manager->timestamps[0]) > TAPPING_TERM * manager->idx) {
            manager->idx = 0;
-         } 
+         }
          if (manager->idx == 0 && is_pressed) {
             manager->timestamps[0] = timer_read();
             manager->idx = 1;
@@ -238,6 +240,9 @@ void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
      release_held_keys();
   }
 }
+
+static bool is_vim_binds_on = false;
+static bool is_raise_on = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (held && !record->event.pressed && keycode < QK_FUNCTION_MAX) {
@@ -308,6 +313,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case SHIFT_CAPS:
       double_tap_check(record->event.pressed, &shift_caps_tracker, KC_LSFT);
       return false;
+    case MO_VIM_BINDS:
+      if (record->event.pressed) {
+        is_vim_binds_on = true;
+        if (layer_state_is(_RAISE)) {
+          layer_off(_RAISE);
+          register_code(KC_LGUI);
+        } else {
+          layer_on(_VIM_BINDS);
+        }
+      } else {
+        is_vim_binds_on = false;
+        layer_off(_VIM_BINDS);
+        if (is_raise_on) {
+          unregister_code(KC_LGUI);
+          layer_on(_RAISE);
+        }
+      }
+      return false;
+    case MO_RAISE:
+      if (record->event.pressed) {
+        is_raise_on = true;
+        if (layer_state_is(_VIM_BINDS)) {
+          layer_off(_VIM_BINDS);
+          register_code(KC_LGUI);
+        } else {
+          layer_on(_RAISE);
+        }
+      } else {
+        is_raise_on = false;
+        layer_off(_RAISE);
+        if (is_vim_binds_on) {
+          unregister_code(KC_LGUI);
+          layer_on(_VIM_BINDS);
+        }
+      }
+      return false;
+
+
   }
   return true;
 }
