@@ -1154,3 +1154,4 @@ bool mousekey_console(uint8_t code) {
 }
 
 #endif /* COMMAND_ENABLE */
+report_mouse_t mousekey_get_report(void) { return mouse_report; }
