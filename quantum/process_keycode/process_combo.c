@@ -532,8 +532,8 @@ void tsm_combo_initial_setup(void) {
 }
 
 static void tsm_send_keyrecord(uint16_t keycode, bool pressed) {
-  uprintf("Sending key %d as %s\n", keycode, pressed ? "true" : "false");
-  keyrecord_t record = {
+    uprintf("Sending key %d as %s\n", keycode, pressed ? "true" : "false");
+    keyrecord_t record = {
       .event =
           {
               .key     = COMBO_KEY_POS,
@@ -554,7 +554,7 @@ static void tsm_combo_activate(int combo_idx, uint16_t keycode) {
   const uint16_t *key = key_combos[combo_idx].keys;
   bool keycode_ignored = false;
   while (*key != COMBO_END) {
-    if (!keycode_ignored && *key != keycode) {
+    if (!keycode_ignored && *key == keycode) {
       keycode_ignored = true;
     } else {
       tsm_send_keyrecord(*key, false);
@@ -570,7 +570,7 @@ static void tsm_combo_deactivate(int combo_idx, uint16_t keycode) {
   const uint16_t *key = key_combos[combo_idx].keys;
   bool keycode_ignored = false;
   while (*key != COMBO_END) {
-    if (!keycode_ignored && *key != keycode) {
+    if (!keycode_ignored && *key == keycode) {
       keycode_ignored = true;
     } else {
       tsm_send_keyrecord(*key, true);
