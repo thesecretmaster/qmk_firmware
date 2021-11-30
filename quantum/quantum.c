@@ -144,7 +144,7 @@ void reset_keyboard(void) {
 
 /* Convert record into usable keycode via the contained event. */
 uint16_t get_record_keycode(keyrecord_t *record, bool update_layer_cache) {
-#if defined(COMBO_ENABLE) || defined(TSM_COMBO)
+#ifdef COMBO_ENABLE
     if (record->keycode) {
         return record->keycode;
     }
