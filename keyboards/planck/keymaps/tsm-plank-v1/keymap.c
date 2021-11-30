@@ -54,7 +54,6 @@ combo_t key_combos[COMBO_COUNT] = {
    COMBO(lgui_space_combo, LGUI(KC_SPC))
 };
 
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 [_MC_OVERRIDES] = LAYOUT_planck_grid(
@@ -241,7 +240,6 @@ void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  uprintf("Sending key %d as %s\n", keycode, record->event.pressed ? "true" : "false");
   if (held && !record->event.pressed && keycode < QK_FUNCTION_MAX) {
      // memcpy(&held_buffer[held_count].record, record, sizeof(keyrecord_t));
      held_buffer[held_count].keycode = keycode;
