@@ -60,7 +60,7 @@ typedef struct {
 #ifndef NO_ACTION_TAPPING
     tap_t tap;
 #endif
-#if defined(COMBO_ENABLE) || defined(TSM_COMBO)
+#ifdef COMBO_ENABLE
     uint16_t keycode;
 #endif
 } keyrecord_t;
