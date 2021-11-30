@@ -241,6 +241,7 @@ void post_process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  uprintf("Sending key %d as %s\n", keycode, record->event.pressed ? "true" : "false");
   if (held && !record->event.pressed && keycode < QK_FUNCTION_MAX) {
      // memcpy(&held_buffer[held_count].record, record, sizeof(keyrecord_t));
      held_buffer[held_count].keycode = keycode;
