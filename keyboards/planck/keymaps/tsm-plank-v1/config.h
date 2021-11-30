@@ -44,6 +44,7 @@
 #define TAPPING_TOGGLE 2
 #define COMBO_COUNT 3
 
+#define TSM_COMBO
 // Extend the length of the RAISE + VIM BIND -> LGUI combo. Not _needed_ but nice QOL. Extends it to TAPPING_TERM.
 #define COMBO_MUST_HOLD_MODS
 // Actually, make all the combos infinitely long. Could be dangerous, but with just the GAMER_ARROWS and LGUI combos, shouldn't be an issue.
