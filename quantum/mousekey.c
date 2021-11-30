@@ -852,8 +852,6 @@ void mousekey_task(void) {
     if (m.dx || m.dy || w.dx || w.dy) send_dxdy(m, w);
 }
 
-report_mouse_t mousekey_get_report(void) { return mouse_report; }
-
 /***********************************************************
  * Mousekey console
  ***********************************************************/
