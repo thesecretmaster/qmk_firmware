@@ -37,14 +37,15 @@
 #    define COMBO_BUFFER_LENGTH 4
 #endif
 
+
 typedef struct {
     const uint16_t *keys;
     uint16_t        keycode;
+    bool             active;
 #ifdef EXTRA_SHORT_COMBOS
     uint8_t state;
 #else
     bool     disabled;
-    bool     active;
 #    if defined(EXTRA_EXTRA_LONG_COMBOS)
     uint32_t state;
 #    elif defined(EXTRA_LONG_COMBOS)
@@ -56,7 +57,7 @@ typedef struct {
 } combo_t;
 
 #define COMBO(ck, ca) \
-    { .keys = &(ck)[0], .keycode = (ca) }
+    { .active = false, .state = 0x0, .keys = &(ck)[0], .keycode = (ca) }
 #define COMBO_ACTION(ck) \
     { .keys = &(ck)[0] }
 
