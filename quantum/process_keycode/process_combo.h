@@ -37,7 +37,6 @@
 #    define COMBO_BUFFER_LENGTH 4
 #endif
 
-typedef uint16_t tsm_combo_bitmap;
 
 typedef struct {
     const uint16_t *keys;
@@ -55,11 +54,10 @@ typedef struct {
     uint8_t state;
 #    endif
 #endif
-    tsm_combo_bitmap keys_bitmap;
 } combo_t;
 
 #define COMBO(ck, ca) \
-    { .active = false, .keys_bitmap = 0x0, .keys = &(ck)[0], .keycode = (ca) }
+    { .active = false, .state = 0x0, .keys = &(ck)[0], .keycode = (ca) }
 #define COMBO_ACTION(ck) \
     { .keys = &(ck)[0] }
 

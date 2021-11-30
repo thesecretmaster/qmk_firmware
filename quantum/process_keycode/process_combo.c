@@ -116,22 +116,27 @@ static queued_combo_t combo_buffer[COMBO_BUFFER_LENGTH];
         } while (0)
 #endif
 
+static void process_keycode(uint16_t keycode, bool pressed) {
+    // uprintf("Sending key %d as %s\n", keycode, pressed ? "true" : "false");
+    keyrecord_t record = {
+      .event =
+          {
+              .key     = COMBO_KEY_POS,
+              .time    = timer_read() | 1,
+              .pressed = pressed,
+          },
+      .keycode = keycode,
+  };
+#ifndef NO_ACTION_TAPPING
+  action_tapping_process(record);
+#else
+  process_record(&record);
+#endif
+}
+
 static inline void release_combo(uint16_t combo_index, combo_t *combo) {
     if (combo->keycode) {
-        keyrecord_t record = {
-            .event =
-                {
-                    .key     = COMBO_KEY_POS,
-                    .time    = timer_read() | 1,
-                    .pressed = false,
-                },
-            .keycode = combo->keycode,
-        };
-#ifndef NO_ACTION_TAPPING
-        action_tapping_process(record);
-#else
-        process_record(&record);
-#endif
+        process_keycode(combo->keycode, false);
     } else {
         process_combo_event(combo_index, false);
     }
@@ -464,7 +469,7 @@ static bool process_single_combo(combo_t *combo, uint16_t keycode, keyrecord_t *
 }
 
 #ifdef TSM_COMBO
-static tsm_combo_bitmap active_keys_bitmap = 0x0;
+static typeof(((combo_t){0}).state) active_keys_bitmap = 0x0;
 
 static uint16_t *active_keys_list;
 static uint16_t active_keys_list_length;
@@ -525,39 +530,21 @@ void tsm_combo_initial_setup(void) {
            if (active_keys_list[j] == *key)
              key_idx = j;
          if (key_idx >= 0)
-           key_combos[i].keys_bitmap |= 0x1 << key_idx;
+           key_combos[i].state |= 0x1 << key_idx;
          key += 1;
       }
    }
 }
 
-static void tsm_send_keyrecord(uint16_t keycode, bool pressed) {
-    uprintf("Sending key %d as %s\n", keycode, pressed ? "true" : "false");
-    keyrecord_t record = {
-      .event =
-          {
-              .key     = COMBO_KEY_POS,
-              .time    = timer_read() | 1,
-              .pressed = pressed,
-          },
-      .keycode = keycode,
-  };
-#ifndef NO_ACTION_TAPPING
-  action_tapping_process(record);
-#else
-  process_record(&record);
-#endif
-}
-
 static void tsm_combo_activate(int combo_idx, uint16_t keycode) {
-  tsm_send_keyrecord(key_combos[combo_idx].keycode, true);
+  process_keycode(key_combos[combo_idx].keycode, true);
   const uint16_t *key = key_combos[combo_idx].keys;
   bool keycode_ignored = false;
   while (*key != COMBO_END) {
     if (!keycode_ignored && *key == keycode) {
       keycode_ignored = true;
     } else {
-      tsm_send_keyrecord(*key, false);
+      process_keycode(*key, false);
     }
     key += 1;
   }
@@ -566,14 +553,14 @@ static void tsm_combo_activate(int combo_idx, uint16_t keycode) {
 static void tsm_combo_deactivate(int combo_idx, uint16_t keycode) {
   // Unpress the combo keycode
   // Re-press everything except for keycode
-  tsm_send_keyrecord(key_combos[combo_idx].keycode, false);
+  process_keycode(key_combos[combo_idx].keycode, false);
   const uint16_t *key = key_combos[combo_idx].keys;
   bool keycode_ignored = false;
   while (*key != COMBO_END) {
     if (!keycode_ignored && *key == keycode) {
       keycode_ignored = true;
     } else {
-      tsm_send_keyrecord(*key, true);
+      process_keycode(*key, true);
     }
     key += 1;
   }
@@ -597,22 +584,22 @@ static bool tsm_combo_run(uint16_t keycode, keyrecord_t *record) {
    }
    // If the key isn't used in any combos, skip!
    if (key_idx >= 0) {
-      uprintf("BEFORE: %X\n", active_keys_bitmap);
+      // uprintf("BEFORE: %X\n", active_keys_bitmap);
       if (record->event.pressed) {
          // Add the keycode to the list of pressed keys
          active_keys_bitmap |= (0x1 << key_idx);
          // checkable_keys is all of the currently pressed keys WITHOUT the keys that have been consumed
-         tsm_combo_bitmap checkable_keys = active_keys_bitmap;
+         typeof(((combo_t){0}).state) checkable_keys = active_keys_bitmap;
          for (int i = 0; i < COMBO_COUNT; i++)
             if (key_combos[i].active)
-               checkable_keys &= ~(key_combos[i].keys_bitmap);
+               checkable_keys &= ~(key_combos[i].state);
          // check if the remaining consumeable keypressed form a combo, if so activate the combo and "comsume" the presses in that combo
          for (int i = 0; i < COMBO_COUNT; i++) {
-            uprintf("Combo %d: %X\n", i, key_combos[i].keys_bitmap);
-            if ((checkable_keys & key_combos[i].keys_bitmap) == key_combos[i].keys_bitmap) {
+            // uprintf("Combo %d: %X\n", i, key_combos[i].state);
+            if ((checkable_keys & key_combos[i].state) == key_combos[i].state) {
                // ACTIVATE THE COMBO
-               uprintf("Activating combo %d\n", i);
-               active_keys_bitmap &= ~key_combos[i].keys_bitmap;
+               // uprintf("Activating combo %d\n", i);
+               active_keys_bitmap &= ~key_combos[i].state;
                key_combos[i].active = true;
                tsm_combo_activate(i, keycode);
                return false;
@@ -625,22 +612,22 @@ static bool tsm_combo_run(uint16_t keycode, keyrecord_t *record) {
          } else {
             // If it's consumed, we need to find which combo consumed it (there can only be one) and then release the combo and release the key
             for (int i = 0; i < COMBO_COUNT; i++) {
-               if (key_combos[i].active && (key_combos[i].keys_bitmap & (0x1 << key_idx)) != 0) {
+               if (key_combos[i].active && (key_combos[i].state & (0x1 << key_idx)) != 0) {
                   // Move all of the keys back from the combo to the main list ("consumed" -> "pressed")
-                  active_keys_bitmap |= key_combos[i].keys_bitmap;
+                  active_keys_bitmap |= key_combos[i].state;
                   // Unpress the one key
                   active_keys_bitmap &= ~(0x1 << key_idx);
                   // Mark the combo as inactive
                   key_combos[i].active = false;
                   // DEACTIVATE THE COMBO
-                  uprintf("Deactivating combo %d\n", i);
+                  // uprintf("Deactivating combo %d\n", i);
                   tsm_combo_deactivate(i, keycode);
                   return false;
                }
             }
          }
       }
-    uprintf("AFTER: %X\n", active_keys_bitmap);
+    // uprintf("AFTER: %X\n", active_keys_bitmap);
    }
    return true;
 }
